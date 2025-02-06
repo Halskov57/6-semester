@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   mongo:
     image: mongo:latest
@@ -6,6 +8,7 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    command: --noauth
 
   app:
     build: .
@@ -16,6 +19,9 @@ services:
       - .env
     depends_on:
       - mongo
+    volumes:
+      - .:/app  # Ensure the app has access to your project files
+    entrypoint: ["./wait-for-it.sh", "some-mongo:27017", "--", "npm", "start"]
 
 volumes:
   mongo-data:

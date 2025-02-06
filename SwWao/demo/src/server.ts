@@ -1,4 +1,3 @@
-// filepath: /C:/Users/nicol/6.semester/SwWao/express-demos/src/server.ts
 import express from 'express';
 import UserRoutes from './routes/userRoutes.js';
 import ProductRoutes from './routes/productRoutes.js';
@@ -10,23 +9,29 @@ import mongoose from 'mongoose';
 
 dotenv.config();  // Load environment variables from .env file
 
+// Verify environment variables
+console.log('MONGO_URI:', process.env.MONGO_URI);
+console.log('PORT:', process.env.PORT);
+
 // Connect to MongoDB using the MONGO_URI from the .env file
-mongoose.connect(process.env.MONGO_URI || 'mongodb://some-mongo:27017/myapp')
+mongoose.connect('mongodb://some-mongo:27017/mydatabase', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  // Increase timeout to 5 seconds
+})
   .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Could not connect to MongoDB', err));
+  .catch(err => {
+    console.error('Could not connect to MongoDB', err);
+    process.exit(1);  // Exit the process if MongoDB connection fails
+  });
 
 // Create an Express application
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT || '3000', 10);  // Convert PORT to a number
 
 // Express middleware
-// Enable CORS
 app.use(cors());
-
-// Enable logging
 app.use(morgan('dev'));
-
-// Built-in middleware
 app.use(express.json());
 
 // Application-level middleware (for testing purposes)
@@ -50,11 +55,6 @@ app.use('/api', UserRoutes);
 app.use('/api', ProductRoutes); 
 app.use('/api', OrderRoutes);
 
-// Generate error for demonstration purposes
-// app.get('/error', (req, res) => {
-//   throw new Error('Forced error');
-// });
-
 // Custom 404 handler (after all routes)
 app.use((req, res) => {
   res.status(404).send('Endpoint not found');
@@ -62,12 +62,12 @@ app.use((req, res) => {
 
 // Error-handling middleware (always last)
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
+  console.error('Error stack:', err.stack);
   res.status(500).send('Unexpected server error');
 });
 
 // Start the server
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Example app listening on port ${PORT}`);
 });
 
@@ -77,4 +77,16 @@ process.on('SIGTERM', () => {
   server.close(() => {
     console.log('HTTP server closed');
   });
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception:', err);
+  process.exit(1);  // Exit the process on uncaught exception
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled promise rejection:', promise, 'reason:', reason);
+  process.exit(1);  // Exit the process on unhandled promise rejection
 });
