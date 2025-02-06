@@ -1,0 +1,43 @@
+{
+  "name": "express-demos",
+  "version": "1.0.0",
+  "description": "Demos for the course SWWAO",
+  "main": "server.ts",
+  "type": "module",
+  "author": "Poul Ejnar Rovsing",
+  "license": "ISC",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/server.js",
+    "devnat": "node --watch --experimental-strip-types --experimental-transform-types src/server.ts",
+    "dev": "npx tsx watch src/server.ts",
+    "lint": "eslint . --fix",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
+  },
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.32.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.0.1",
+    "mongoose": "^8.9.5",
+    "morgan": "^1.10.0",
+    "rotating-file-stream": "^3.2.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@tsconfig/node22": "^22.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.10.2",
+    "eslint": "^9.17.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.18.2"
+  },
+  "keywords": [
+    "node",
+    "express"
+  ]
+}
