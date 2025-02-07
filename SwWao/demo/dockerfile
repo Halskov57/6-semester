@@ -9,10 +9,6 @@ RUN npm install
 
 COPY src src
 
-# If you need to build the project, uncomment the following line
-# RUN npm run build
-
-# Copy the dist directory
 COPY dist dist
 
 ADD public.tar.gz .
@@ -21,5 +17,4 @@ ARG PORT_ARG=3000
 ENV PORT=$PORT_ARG
 
 EXPOSE $PORT_ARG
-ENTRYPOINT [ "npm" ]
-CMD [ "start" ]
+CMD [ "npm", "start" ]

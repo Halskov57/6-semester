@@ -8,7 +8,9 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
-    command: --noauth
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
 
   app:
     build: .
@@ -19,9 +21,6 @@ services:
       - .env
     depends_on:
       - mongo
-    volumes:
-      - .:/app  # Ensure the app has access to your project files
-    entrypoint: ["./wait-for-it.sh", "some-mongo:27017", "--", "npm", "start"]
 
 volumes:
   mongo-data:
